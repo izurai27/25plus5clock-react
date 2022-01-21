@@ -7,10 +7,12 @@ class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      session:25,
+      session:1500,
+      setSession:25,
       break:5,
       seconds:0,
-      counting:false
+      isToggleOn:true,
+      minutes:25,
     }
     
     this.handleBreakDecrement=this.handleBreakDecrement.bind(this);
@@ -32,42 +34,66 @@ class App extends React.Component {
   handleBreakDecrement(event){
     if(this.state.break>1){
       this.setState({
-      break:this.state.break-1
+      break:this.state.break-1,
+      
     })
     }
     
   }
   
   handleSessionIncrement(event){
-    if(this.state.session<60){
+    if(this.state.setSession<60){
       this.setState({
-        session:this.state.session+1
+        session:this.state.session+60,
+        setSession:this.state.setSession+1,
+        minutes:this.state.minutes+1
+
       })
     }
   }
   
   handleSessionDecrement(event){
-    if(this.state.session>1){
+    if(this.state.setSession>1){
       this.setState({
-        session:this.state.session-1
+        session:this.state.session-60,
+        setSession:this.state.setSession-1,
+        minutes:this.state.minutes-1
       })
     }
   }
 
   handleReset(event){
     this.setState({
-      session:25,
-      break:5
+      session:1500,
+      setSession:25,
+      minutes:25,
+      break:5,
+      seconds:0
     })
   }
 
   handleStart(event){
-    console.log("it's start");
-    this.setState({counting : !this.state.counting})
-    if (this.state.counting === true){
-      setInterval( () => this.setState ({session:this.state.session-1 }), 1000);
+    
+    this.setState({
+      isToggleOn: !this.state.isToggleOn,
+      session:this.state.session,
+      
+    });
+    
+    let countDown;
+    if (this.state.isToggleOn === true){
+      console.log("it's start",this.state.session);
+      countDown = setInterval( () => this.setState ({
+        session: this.state.session-1,
+        minutes: Math.floor(this.state.session/60),
+        seconds:  this.state.session % 60
+      })
+        , 1000);
+    } else {
+      console.log("it's pause");
+      clearInterval(countDown);
     }
-    console.log(this.state.counting)
+    console.log(this.state.isToggleOn);
        
   }
 
@@ -76,9 +102,9 @@ class App extends React.Component {
       <div className="big-container">
         <div className="count-down">
           <div id="timer-label">SESSION</div>
-          <time id="time-left">{this.state.session}</time>
+          <time id="time-left">{this.state.minutes > 9? this.state.minutes : `0${this.state.minutes}`}:{this.state.seconds > 9? this.state.seconds : `0${this.state.seconds}`}</time>
           <div className='buttons'>
-            <button id="start_stop"onClick={this.handleStart}>start</button>
+            <button id="start_stop"onClick={this.handleStart}>{this.state.isToggleOn ? 'START' : 'PAUSE'}</button>
           <button id="reset" onClick={this.handleReset}>reset</button>
           </div>
           
@@ -89,7 +115,7 @@ class App extends React.Component {
           
           <div className='edit-session'>
             <div id="session-label">SESSION LENGTH</div>
-            <div id="session-length">{this.state.session}</div>
+            <div id="session-length">{this.state.setSession}</div>
             <button id="session-increment" onClick={this.handleSessionIncrement}>more</button>
             <button id="session-decrement" onClick={this.handleSessionDecrement}>less</button>
                     
