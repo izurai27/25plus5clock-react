@@ -84,7 +84,7 @@ class App extends React.Component {
     if (this.state.isToggleOn === true){
       console.log("it's start",this.state.session);
       countDown = setInterval( () => this.setState ({
-        session: this.state.session-1,
+        session: this.state.session>1? this.state.session-1 : 0,
         minutes: Math.floor(this.state.session/60),
         seconds:  this.state.session % 60
       })
