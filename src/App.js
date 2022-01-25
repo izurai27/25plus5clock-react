@@ -13,7 +13,8 @@ class App extends React.Component {
       seconds:0,
       isToggleOn:true,
       minutes:25,
-      countDown:1
+      countDown:1,
+      isBreak:false
     }
     
     this.handleBreakDecrement=this.handleBreakDecrement.bind(this);
@@ -69,8 +70,11 @@ class App extends React.Component {
       setSession:25,
       minutes:25,
       break:5,
-      seconds:0
+      seconds:0,
+      isToggleOn:true,
+      isBreak:false
     })
+    clearInterval(this.state.countDown);
   }
 
   handleStart(event){
@@ -89,9 +93,9 @@ class App extends React.Component {
       // console.log("it's start",this.state.session);
     
       const checkInterval = setInterval( () => this.setState ({
-        session: this.state.session>1? this.state.session-1 : 0,
-        minutes: Math.floor(this.state.session/60),
-        seconds:  this.state.session % 60
+        session: this.state.session>0? this.state.session-1 : this.state.break*60,
+        // minutes: Math.floor(this.state.session/60),
+        // seconds:  this.state.session % 60
       })
         , 1000);
 
@@ -107,8 +111,9 @@ class App extends React.Component {
     return(
       <div className="big-container">
         <div className="count-down">
-          <div id="timer-label">SESSION</div>
-          <time id="time-left">{this.state.minutes > 9? this.state.minutes : `0${this.state.minutes}`}:{this.state.seconds > 9? this.state.seconds : `0${this.state.seconds}`}</time>
+          <div id="timer-label">{this.state.isBreak ? 'BREAK' : 'SESSION'}</div>
+          <time id="time-left">{Math.floor(this.state.session/60) > 9? Math.floor(this.state.session/60) : `0${Math.floor(this.state.session/60)}`}:{this.state.session % 60 > 9? this.state.session % 60 : `0${this.state.session % 60}`}</time>
+          {/* <time id="time-left">{this.state.minutes > 9? this.state.minutes : `0${this.state.minutes}`}:{this.state.seconds > 9? this.state.seconds : `0${this.state.seconds}`}</time> */}
           <div className='buttons'>
             <button id="start_stop"onClick={this.handleStart}>{this.state.isToggleOn ? 'START' : 'PAUSE'}</button>
           <button id="reset" onClick={this.handleReset}>reset</button>
