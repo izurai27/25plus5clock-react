@@ -1,6 +1,6 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-import { render } from '@testing-library/react';
+// import { render } from '@testing-library/react';
 import React from 'react';
 
 class App extends React.Component {
@@ -13,6 +13,7 @@ class App extends React.Component {
       seconds:0,
       isToggleOn:true,
       minutes:25,
+      countDown:1
     }
     
     this.handleBreakDecrement=this.handleBreakDecrement.bind(this);
@@ -80,20 +81,25 @@ class App extends React.Component {
       
     });
     
-    let countDown;
-    if (this.state.isToggleOn === true){
-      console.log("it's start",this.state.session);
-      countDown = setInterval( () => this.setState ({
+    
+    if (this.state.isToggleOn === false){
+      console.log("it's pause");
+      clearInterval(this.state.countDown);
+    } else {
+      // console.log("it's start",this.state.session);
+    
+      const checkInterval = setInterval( () => this.setState ({
         session: this.state.session>1? this.state.session-1 : 0,
         minutes: Math.floor(this.state.session/60),
         seconds:  this.state.session % 60
       })
         , 1000);
-    } else {
-      console.log("it's pause");
-      clearInterval(countDown);
+
+      this.setState({
+          countDown:checkInterval
+      })
     }
-    console.log(this.state.isToggleOn);
+    console.log(this.state.isToggleOn, this.state.countDown);
        
   }
 
