@@ -92,12 +92,31 @@ class App extends React.Component {
     } else {
       // console.log("it's start",this.state.session);
     
-      const checkInterval = setInterval( () => this.setState ({
-        session: this.state.session>0? this.state.session-1 : this.state.break*60,
-        // minutes: Math.floor(this.state.session/60),
-        // seconds:  this.state.session % 60
-      })
+      const checkInterval = setInterval( () => {
+        if(this.state.session === 0){
+          // document.getElementById('beep').play();
+          
+          this.setState ({
+            session: this.state.isBreak? this.state.setSession*60-1 : this.state.break*60-1,
+            isBreak:!this.state.isBreak        
+          });
+
+          document.getElementById('beep').play();
+          
+        } else {
+          this.setState ({
+            session: this.state.session-1,
+        
+          })
+        }}
+        
         , 1000);
+      // const checkInterval = setInterval( () => this.setState ({
+      //   session: this.state.session>0? this.state.session-1 : this.state.break*60,
+      //   // minutes: Math.floor(this.state.session/60),
+      //   // seconds:  this.state.session % 60
+      // })
+      //   , 1000);
 
       this.setState({
           countDown:checkInterval
@@ -110,8 +129,9 @@ class App extends React.Component {
   render(){
     return(
       <div className="big-container">
+        <audio id="beep" src="./alarm_beep_1.mp3" type="audio/mpeg"></audio>
         <div className="count-down">
-          <div id="timer-label">{this.state.isBreak ? 'BREAK' : 'SESSION'}</div>
+          <div id="timer-label">{this.state.isBreak ? 'ENJOY YOUR BREAK' : 'FOCUS TIME'}</div>
           <time id="time-left">{Math.floor(this.state.session/60) > 9? Math.floor(this.state.session/60) : `0${Math.floor(this.state.session/60)}`}:{this.state.session % 60 > 9? this.state.session % 60 : `0${this.state.session % 60}`}</time>
           {/* <time id="time-left">{this.state.minutes > 9? this.state.minutes : `0${this.state.minutes}`}:{this.state.seconds > 9? this.state.seconds : `0${this.state.seconds}`}</time> */}
           <div className='buttons'>
